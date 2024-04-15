@@ -20,8 +20,9 @@ public class Consumer {
         try (KafkaConsumer<String, String> consumer = configureKafkaConsumer()) {
             consumer.subscribe(Collections.singletonList("topic-test"));
 
-            while (true) {
-                ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofSeconds(10));
+            ConsumerRecords<String, String> consumerRecords;
+            while (!Thread.currentThread().isInterrupted()) {
+                consumerRecords = consumer.poll(Duration.ofSeconds(10));
                 for (ConsumerRecord<String, String> consumerRecord : consumerRecords) {
                     logger.info("Topic: {}", consumerRecord.topic());
                     logger.info("Partition: {}", consumerRecord.partition());
